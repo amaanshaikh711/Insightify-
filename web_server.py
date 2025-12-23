@@ -127,6 +127,20 @@ class InsightifyRequestHandler(SimpleHTTPRequestHandler):
             report_title = form_data.get('title', 'Professional Data Analysis Report')
             report_subtitle = form_data.get('subtitle', 'Comprehensive Analysis & Insights')
             
+            # Get chart type configuration options (default to True if not specified)
+            chart_config = {
+                'histograms': form_data.get('includeHistograms', 'true').lower() == 'true',
+                'pie_charts': form_data.get('includePieCharts', 'true').lower() == 'true',
+                'box_plots': form_data.get('includeBoxPlots', 'true').lower() == 'true',
+                'line_charts': form_data.get('includeLineCharts', 'true').lower() == 'true'
+            }
+            
+            print(f"[*] Chart Configuration:")
+            print(f"    - Histograms: {chart_config['histograms']}")
+            print(f"    - Pie Charts: {chart_config['pie_charts']}")
+            print(f"    - Box Plots: {chart_config['box_plots']}")
+            print(f"    - Line Charts: {chart_config['line_charts']}")
+            
             print(f"[*] Starting analysis...")
             
             # Generate report
@@ -142,13 +156,17 @@ class InsightifyRequestHandler(SimpleHTTPRequestHandler):
             analysis_results = analyzer.perform_analysis()
             print(f"[*] Analysis complete")
             
-            analyzer.generate_charts(chart_dir)
-            print(f"[*] Charts generated")
+            # Generate charts with configuration
+            analyzer.generate_charts(chart_dir, chart_config)
+            print(f"[*] Charts generated based on configuration")
             
             # Generate PDF
             report_gen = PDFReportGenerator(output_pdf)
+            
+            # Add all sections (charts will be filtered by the analyzer)
             report_gen.add_title_page(report_title, report_subtitle, datetime.now().strftime("%B %d, %Y"))
             report_gen.add_executive_summary(analysis_results)
+            report_gen.add_insights(analysis_results)
             report_gen.add_numeric_analysis(analysis_results)
             report_gen.add_categorical_analysis(analysis_results)
             report_gen.add_correlations(analysis_results)

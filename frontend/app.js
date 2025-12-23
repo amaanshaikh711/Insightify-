@@ -49,6 +49,9 @@ function initializeApp() {
 
     // Navigation links
     setupNavigation();
+
+    // Initialize hamburger menu for mobile
+    initializeHamburgerMenu();
 }
 
 function setupNavigation() {
@@ -62,6 +65,58 @@ function setupNavigation() {
 
     // Set home as active by default
     document.querySelector('a[href="#home"]').classList.add('active');
+}
+
+// Hamburger Menu for Mobile Navigation
+function initializeHamburgerMenu() {
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const navMenu = document.getElementById('navMenu');
+
+    if (!hamburgerMenu || !navMenu) return;
+
+    // Toggle menu on hamburger click
+    hamburgerMenu.addEventListener('click', function (e) {
+        e.stopPropagation();
+        hamburgerMenu.classList.toggle('active');
+        navMenu.classList.toggle('active');
+
+        // Prevent body scroll when menu is open
+        if (navMenu.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Close menu when clicking a nav link
+    const navLinks = navMenu.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function () {
+            hamburgerMenu.classList.remove('active');
+            navMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function (e) {
+        if (navMenu.classList.contains('active') &&
+            !navMenu.contains(e.target) &&
+            !hamburgerMenu.contains(e.target)) {
+            hamburgerMenu.classList.remove('active');
+            navMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Close menu on window resize (if going to desktop size)
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 768) {
+            hamburgerMenu.classList.remove('active');
+            navMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
 }
 
 function handleFileSelect(file) {
@@ -168,6 +223,12 @@ function generateReport() {
     formData.append('file', selectedFile);
     formData.append('title', document.getElementById('reportTitle').value);
     formData.append('subtitle', document.getElementById('reportSubtitle').value);
+
+    // Add chart type configuration options
+    formData.append('includeHistograms', document.getElementById('includeHistograms').checked);
+    formData.append('includePieCharts', document.getElementById('includePieCharts').checked);
+    formData.append('includeBoxPlots', document.getElementById('includeBoxPlots').checked);
+    formData.append('includeLineCharts', document.getElementById('includeLineCharts').checked);
 
     // Start progress simulation
     let simulatedProgress = 10;

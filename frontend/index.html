@@ -8,8 +8,8 @@
         content="Insightify - Professional Data Analysis & Report Generation. Transform your CSV data into actionable insights.">
     <meta name="theme-color" content="#3498db">
     <title>Insightify - Professional Data Analysis & Report Generation</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -18,35 +18,84 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <span class="logo-icon">📊</span>
+                <img src="frontend/logo.png" alt="Insightify Logo" class="logo-img">
                 <span class="logo-text">Insightify</span>
             </div>
-            <ul class="nav-menu">
+            <!-- Hamburger Menu Button (Mobile Only) -->
+            <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle navigation menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
                 <li><a href="#home" class="nav-link active">Home</a></li>
                 <li><a href="#features" class="nav-link">Features</a></li>
                 <li><a href="#how-to-use" class="nav-link">How to Use</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">Professional Data Analysis & Report Generation</h1>
-            <p class="hero-subtitle">Transform Your Data Into Actionable Insights with Insightify</p>
-            <p class="hero-description">Advanced analytics platform designed for data scientists, analysts, and business
-                professionals</p>
-            <button class="cta-button" onclick="document.getElementById('app').scrollIntoView({behavior: 'smooth'})">Get
-                Started</button>
+        <div class="hero-background">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <div class="gradient-orb orb-3"></div>
+            <div class="floating-shapes">
+                <div class="shape shape-1">📊</div>
+                <div class="shape shape-2">📈</div>
+                <div class="shape shape-3">💹</div>
+                <div class="shape shape-4">📉</div>
+                <div class="shape shape-5">📋</div>
+            </div>
         </div>
-        <div class="hero-background"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-icon">✨</span>
+                <span class="badge-text">AI-Powered Data Analysis</span>
+            </div>
+            <h1 class="hero-title">
+                Transform Your Data Into
+                <span class="gradient-text">Actionable Insights</span>
+            </h1>
+            <p class="hero-subtitle">Professional Report Generation in Seconds</p>
+            <p class="hero-description">
+                Upload any CSV file and let Insightify's advanced analytics engine create
+                comprehensive, publication-ready reports with beautiful visualizations and deep insights.
+            </p>
+            <div class="hero-cta">
+                <button class="cta-button cta-primary"
+                    onclick="document.getElementById('app').scrollIntoView({behavior: 'smooth'})">
+                    <span class="btn-text">Get Started Free</span>
+                    <span class="btn-icon">→</span>
+                </button>
+                <button class="cta-button cta-secondary"
+                    onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
+                    <span class="btn-icon">▶</span>
+                    <span class="btn-text">Watch Demo</span>
+                </button>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="cube-container">
+                <div class="cube">
+                    <div class="face front">📊</div>
+                    <div class="face back">📈</div>
+                    <div class="face right">💹</div>
+                    <div class="face left">📉</div>
+                    <div class="face top">📋</div>
+                    <div class="face bottom"></div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <div class="scroll-text">Scroll to explore</div>
+        </div>
     </section>
 
     <!-- Main Application Section -->
@@ -102,17 +151,38 @@
                                     <input type="text" id="reportSubtitle" placeholder="Enter report subtitle"
                                         value="Comprehensive Analysis & Insights">
                                 </div>
-                                <div class="form-group checkbox-group">
-                                    <label>
-                                        <input type="checkbox" id="includeCharts" checked>
-                                        Include Visualizations
-                                    </label>
-                                </div>
-                                <div class="form-group checkbox-group">
-                                    <label>
-                                        <input type="checkbox" id="include3D" checked>
-                                        Include 3D Charts
-                                    </label>
+                                <div class="form-group">
+                                    <label>Chart Configuration</label>
+                                    <div class="config-grid">
+                                        <label class="config-option">
+                                            <input type="checkbox" id="includeHistograms" checked>
+                                            <span class="config-label">
+                                                <!-- <span class="config-icon">📊</span> -->
+                                                <span class="config-text">Histograms</span>
+                                            </span>
+                                        </label>
+                                        <label class="config-option">
+                                            <input type="checkbox" id="includePieCharts" checked>
+                                            <span class="config-label">
+                                                <!-- <span class="config-icon">🥧</span> -->
+                                                <span class="config-text">Pie Charts</span>
+                                            </span>
+                                        </label>
+                                        <label class="config-option">
+                                            <input type="checkbox" id="includeBoxPlots" checked>
+                                            <span class="config-label">
+                                                <!-- <span class="config-icon">📦</span> -->
+                                                <span class="config-text">Box Plots</span>
+                                            </span>
+                                        </label>
+                                        <label class="config-option">
+                                            <input type="checkbox" id="includeLineCharts" checked>
+                                            <span class="config-label">
+                                                <!-- <span class="config-icon">📈</span> -->
+                                                <span class="config-text">Line Charts</span>
+                                            </span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
