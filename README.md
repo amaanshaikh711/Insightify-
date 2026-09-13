@@ -1,17 +1,19 @@
 <div align="center">
 
-# 📊 Insightify
+<img src="frontend/logo-full.png" alt="Insightify" width="420">
+
+# Insightify
 
 ### Professional Data Analysis & Report Generation Platform
 
-[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)]()
 
-**Transform your CSV data into actionable insights with professional PDF reports**
+**Transform your CSV data into actionable insights with professional PDF reports — in seconds.**
 
-[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Architecture](#-system-architecture) • [Contributing](#-contributing)
+[Features](#-features) • [Quick Start](#-quick-start) • [Report Contents](#-report-contents) • [Architecture](#-architecture) • [Project Structure](#-project-structure) • [Contributing](#-contributing)
 
 ---
 
@@ -25,17 +27,15 @@
 
 - [About the Project](#-about-the-project)
 - [Features](#-features)
-- [System Architecture](#-system-architecture)
-- [Data Flow](#-data-flow)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Installation](#-installation)
+- [Quick Start](#-quick-start)
 - [Usage](#-usage)
 - [Report Contents](#-report-contents)
+- [Architecture](#-architecture)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
 - [API Reference](#-api-reference)
-- [Mobile Responsiveness](#-mobile-responsiveness)
-- [Screenshots](#-screenshots)
 - [Use Cases](#-use-cases)
+- [Privacy & Security](#-privacy--security)
 - [Contributing](#-contributing)
 - [License](#-license)
 - [Acknowledgments](#-acknowledgments)
@@ -44,235 +44,153 @@
 
 ## 🎯 About the Project
 
-**Insightify** is a professional-grade data analysis and report generation platform that transforms raw CSV data into comprehensive, publication-ready PDF reports. Built as part of the **CODTECH IT Solutions Internship Program**, this project demonstrates advanced Python programming, data visualization, and full-stack web development skills.
+**Insightify** is a professional-grade data analysis and report generation platform that transforms raw CSV data into comprehensive, publication-ready PDF reports. Upload any CSV, configure the visualizations you want, and receive a polished multi-page report with statistics, charts, correlations, and automated insights — all processed locally on your machine.
 
-### 🏢 Internship Details
+Built as part of the **CODTECH IT Solutions Internship Program** (Task 3 — Dynamic Report Generation & Data Visualization).
 
-| Field | Details |
-|-------|---------|
-| **Company** | CODTECH IT SOLUTIONS |
-| **Intern Name** | Aman Shaikh |
-| **Intern ID** | CT06DR1460 |
-| **Domain** | Python Programming |
-| **Duration** | 6 Weeks |
-| **Mentor** | Neela Santhosh Kumar |
-| **Task** | Task 3 – Dynamic Report Generation & Data Visualization |
+### Why Insightify?
+
+| | |
+|---|---|
+| 🧠 **Zero configuration** | Automatic column-type detection works with **any** CSV structure |
+| ⚡ **Fast** | Handles datasets from a few rows to millions, with robust edge-case handling |
+| 📄 **Presentation-ready** | Multi-page branded PDFs with executive summary, tables & visualizations |
+| 🔒 **Private** | 100% local processing — your data never leaves your machine |
 
 ---
 
 ## ✨ Features
 
-<table>
-<tr>
-<td width="50%">
+### 🔍 Smart Analysis Engine
+- Universal CSV file support with automatic column type detection (numeric / categorical / temporal)
+- Comprehensive statistics: mean, median, std, quartiles, skewness, kurtosis
+- Correlation matrix with strength & direction classification
+- Data quality checks: missing values, duplicate rows, memory footprint
+- Automated, data-driven insights generated from your actual data
 
-### 🔍 **Smart Analysis Engine**
-- Universal CSV file support
-- Automatic column type detection
-- Dynamic statistical analysis
-- Correlation matrix generation
+### 📊 Professional Visualizations
+- Histograms with KDE density curves and statistics boxes
+- Stock-market-style line charts with moving averages, mean & median markers
+- Horizontal bar charts for categorical distributions
+- Pie charts for category breakdowns
+- Correlation heatmaps and scatter plots with trend lines
+- Monthly trend lines for temporal data
+- Configurable chart types — include only what you need
 
-</td>
-<td width="50%">
+### 📄 PDF Report Generation
+- Multi-page professional reports with branded title page
+- Executive summary & key insights
+- Statistical tables for numeric and categorical columns
+- Embedded visualizations with explanations
+- Conclusions & actionable recommendations
 
-### 📊 **Professional Visualizations**
-- Histograms & distributions
-- Pie charts for categories
-- Box plots for outliers
-- Line charts for trends
+### 🌐 Modern Web Interface
+- Responsive, mobile-first design with hamburger navigation
+- Drag & drop file upload with real-time progress tracking
+- Chart-type configuration before generation
+- Recent-reports history with one-click open/download
 
-</td>
-</tr>
-<tr>
-<td>
-
-### 📄 **PDF Report Generation**
-- Multi-page professional reports
-- Executive summaries
-- Embedded visualizations
-- Actionable insights
-
-</td>
-<td>
-
-### 🌐 **Modern Web Interface**
-- Responsive design (mobile-first)
-- Drag & drop file upload
-- Real-time progress tracking
-- Recent reports history
-
-</td>
-</tr>
-</table>
-
-### Key Highlights
-
-- ✅ **Universal Compatibility** – Works with ANY CSV file structure
-- ✅ **No Configuration Required** – Automatic column detection
-- ✅ **Privacy First** – All processing happens locally
-- ✅ **Professional Output** – Publication-ready PDF reports
-- ✅ **Mobile Responsive** – Hamburger menu & touch-friendly UI
-- ✅ **Fast Processing** – Handles datasets with 1M+ rows
+### 🛡 Robustness Highlights
+- Skips KDE curves gracefully on constant/low-variance data
+- Drops empty `Unnamed:` columns caused by stray CSV commas
+- Safe date parsing (no more two-digit-year misreads)
+- Handles empty columns, NaN pairs, and single-category data without crashing
 
 ---
 
-## 🏗 System Architecture
+## 🚀 Quick Start
 
-```mermaid
-graph TB
-    subgraph "Frontend Layer"
-        A[🌐 Web Browser] --> B[HTML/CSS/JS]
-        B --> C[Drag & Drop Upload]
-        B --> D[Progress Tracking]
-        B --> E[Report Download]
-    end
-    
-    subgraph "Server Layer"
-        F[🖥️ Python HTTP Server<br/>Port 8000] --> G[Request Router]
-        G --> H[Static File Handler]
-        G --> I[API Handler]
-    end
-    
-    subgraph "Processing Layer"
-        I --> J[📊 Data Analyzer<br/>Pandas/NumPy]
-        J --> K[📈 Chart Generator<br/>Matplotlib/Seaborn]
-        K --> L[📄 Report Generator<br/>ReportLab]
-    end
-    
-    subgraph "Storage Layer"
-        M[(📁 Data Folder<br/>CSV Files)]
-        N[(📁 Output Folder<br/>PDFs & Charts)]
-    end
-    
-    A <--> F
-    J --> M
-    L --> N
-    E --> N
-    
-    style A fill:#3498db,color:#fff
-    style F fill:#2ecc71,color:#fff
-    style J fill:#9b59b6,color:#fff
-    style L fill:#e74c3c,color:#fff
+### Prerequisites
+- Python 3.8+
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/amaanshaikh711/Insightify-.git
+cd Insightify-
+
+# 2. (Recommended) Create a virtual environment
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # macOS/Linux
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Run the web server
+python web_server.py
+```
+
+Open **http://localhost:8000** and start analyzing. 🎉
+
+> **Windows one-click:** double-click `run_web.bat` — it checks Python, installs dependencies, starts the server and opens your browser.
+
+### Optional: Streamlit UI
+
+```bash
+streamlit run app_streamlit.py
+```
+
+### Optional: CLI-style generation
+
+```bash
+python test_enhanced_reports.py   # end-to-end pipeline demo using a sample CSV
 ```
 
 ---
 
-## 🔄 Data Flow
+## 📖 Usage
+
+1. **Upload** — drag & drop or click to select a CSV file
+2. **Configure** — set the report title/subtitle and toggle chart types (histograms, pie charts, box plots, line charts)
+3. **Generate** — click **Generate Professional Report** and watch live progress
+4. **Review** — open the PDF in the browser or download it
+
+---
+
+## 📑 Report Contents
+
+| Section | Description |
+|---------|-------------|
+| **Title Page** | Branded cover with report metadata |
+| **Executive Summary** | Dataset overview, composition, quality metrics |
+| **Key Insights** | Automated, data-driven findings |
+| **Numeric Analysis** | Mean, median, std, min/max, IQR per column |
+| **Categorical Analysis** | Top values, frequencies, concentration |
+| **Correlation Analysis** | Ranked relationships with strength & direction |
+| **Visualizations** | All configured charts, embedded with captions |
+| **Conclusions** | Findings summary & actionable recommendations |
+
+---
+
+## 🏗 Architecture
 
 ```mermaid
 flowchart LR
-    subgraph Input
-        A[📁 CSV File] --> B[Upload]
-    end
-    
-    subgraph Processing
-        B --> C{File Validation}
-        C -->|Valid| D[Parse CSV]
-        C -->|Invalid| E[Error Response]
-        D --> F[Detect Column Types]
-        F --> G[Statistical Analysis]
-        G --> H[Generate Charts]
-        H --> I[Create PDF Report]
-    end
-    
-    subgraph Output
-        I --> J[📄 PDF Report]
-        I --> K[📊 Chart Images]
-    end
-    
-    style A fill:#3498db,color:#fff
-    style J fill:#27ae60,color:#fff
-    style K fill:#27ae60,color:#fff
-    style E fill:#e74c3c,color:#fff
+    A[🌐 Browser UI] -->|CSV upload| B[⚙️ Python HTTP Server]
+    B --> C[📊 Data Analyzer<br/>Pandas / NumPy / SciPy]
+    C --> D[📈 Chart Generator<br/>Matplotlib / Seaborn]
+    D --> E[📄 PDF Generator<br/>ReportLab]
+    E --> F[📁 output/]
+    F -->|download / open| A
 ```
 
----
-
-## 📊 Analysis Pipeline
-
-```mermaid
-graph TD
-    A[📁 Input CSV] --> B[Data Loading]
-    B --> C{Column Type Detection}
-    
-    C --> D[Numeric Columns]
-    C --> E[Categorical Columns]
-    C --> F[Date Columns]
-    
-    D --> G[Statistical Metrics<br/>Mean, Median, Std, Min, Max]
-    E --> H[Frequency Analysis<br/>Top Values, Distributions]
-    F --> I[Temporal Analysis<br/>Trends, Patterns]
-    
-    G --> J[Histograms]
-    G --> K[Box Plots]
-    H --> L[Pie Charts]
-    H --> M[Bar Charts]
-    I --> N[Line Charts]
-    
-    J --> O[📄 PDF Report]
-    K --> O
-    L --> O
-    M --> O
-    N --> O
-    
-    O --> P[Executive Summary]
-    O --> Q[Statistical Tables]
-    O --> R[Visualizations]
-    O --> S[Insights & Recommendations]
-    
-    style A fill:#3498db,color:#fff
-    style O fill:#e74c3c,color:#fff
-    style P fill:#27ae60,color:#fff
-    style Q fill:#27ae60,color:#fff
-    style R fill:#27ae60,color:#fff
-    style S fill:#27ae60,color:#fff
-```
+**Pipeline:** Upload → parse multipart form → `DataAnalyzer` (statistics, correlations, insights) → chart generation with your configuration → `PDFReportGenerator` builds the document → served back at `/output/report_<timestamp>.pdf`.
 
 ---
 
 ## 🛠 Tech Stack
 
-```mermaid
-mindmap
-  root((Insightify))
-    Backend
-      Python 3.8+
-      Pandas
-      NumPy
-      Matplotlib
-      Seaborn
-      ReportLab
-    Frontend
-      HTML5
-      CSS3
-      JavaScript ES6
-      Responsive Design
-    Server
-      Python HTTP Server
-      Custom API Router
-      Multipart Parser
-    Features
-      CSV Analysis
-      PDF Generation
-      Chart Creation
-      Progress Tracking
-```
-
-### Detailed Stack
-
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| **Backend** | Python 3.8+ | Core programming language |
-| | Pandas | Data manipulation & analysis |
-| | NumPy | Statistical computations |
-| | Matplotlib | Chart generation |
-| | Seaborn | Statistical visualizations |
+| **Backend** | Python 3.8+ | Core application |
+| | Pandas, NumPy | Data manipulation & statistics |
+| | SciPy | KDE density estimation |
+| | Matplotlib, Seaborn | Visualization engine |
 | | ReportLab | PDF document generation |
-| **Frontend** | HTML5 | Page structure |
-| | CSS3 | Styling & animations |
-| | JavaScript | Interactivity & API calls |
-| **Server** | http.server | HTTP request handling |
-| | Custom Router | API endpoint management |
+| **Server** | `http.server` (threaded) | Zero-dependency web server & API |
+| **Frontend** | HTML5, CSS3, JavaScript | Responsive single-page UI |
 
 ---
 
@@ -280,337 +198,106 @@ mindmap
 
 ```
 Insightify/
-│
-├── 📁 frontend/                    # Web Interface
-│   ├── index.html                  # Main application page
-│   ├── styles.css                  # Responsive styling (2500+ lines)
-│   ├── app.js                      # Frontend logic & API calls
-│   ├── logo.png                    # Brand logo/favicon
-│   └── favicon.png                 # Browser favicon
-│
-├── 📁 backend/                     # Core Processing
-│   ├── data_analyzer.py            # CSV analysis engine
-│   ├── report_generator.py         # PDF generation
-│   └── __pycache__/                # Python bytecode cache
-│
-├── 📁 data/                        # Input Files
-│   └── *.csv                       # Uploaded CSV files
-│
-├── 📁 output/                      # Generated Content
-│   ├── *.pdf                       # Generated PDF reports
-│   └── charts/                     # Chart images (PNG)
-│
-├── 📁 .github/                     # GitHub Configuration
-│   └── workflows/                  # CI/CD pipelines
-│
-├── 📄 web_server.py                # Main server application
-├── 📄 requirements.txt             # Python dependencies
-├── 📄 run_web.bat                  # Windows startup script
-├── 📄 demo.png                     # Demo screenshot
-└── 📄 README.md                    # Documentation (this file)
+├── frontend/                 # Web interface
+│   ├── index.html            # Main page
+│   ├── styles.css            # Responsive styling
+│   ├── app.js                # Upload & progress logic
+│   ├── logo-full.png         # Full brand lockup
+│   └── logo.png              # Icon (also used as favicon)
+├── backend/
+│   ├── data_analyzer.py      # Analysis & chart engine
+│   └── report_generator.py   # PDF report builder
+├── data/                     # Seed CSVs (uploads are gitignored)
+├── output/                   # Generated reports & charts (gitignored)
+├── web_server.py             # HTTP server + API
+├── app_streamlit.py          # Alternative Streamlit UI
+├── run_web.bat               # Windows launcher
+└── requirements.txt
 ```
-
----
-
-## ⚙ Installation
-
-### Prerequisites
-
-- Python 3.8 or higher
-- pip (Python package manager)
-- Git (optional, for cloning)
-
-### Step 1: Clone the Repository
-
-```bash
-git clone https://github.com/amaanshaikh711/AUTOMATED-REPORT-GENERATION.git
-cd AUTOMATED-REPORT-GENERATION
-```
-
-### Step 2: Create Virtual Environment (Recommended)
-
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-
-# On macOS/Linux:
-source venv/bin/activate
-```
-
-### Step 3: Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-Or install packages individually:
-
-```bash
-pip install pandas numpy matplotlib seaborn reportlab
-```
-
-### Step 4: Run the Application
-
-```bash
-python web_server.py
-```
-
-### Step 5: Open in Browser
-
-Navigate to: **[http://localhost:8000](http://localhost:8000)**
-
----
-
-## 🚀 Usage
-
-### Web Interface
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Browser
-    participant Server
-    participant Analyzer
-    participant Generator
-    
-    User->>Browser: Open localhost:8000
-    Browser->>Server: GET /
-    Server->>Browser: Return HTML/CSS/JS
-    
-    User->>Browser: Upload CSV file
-    Browser->>Server: POST /api/generate-report
-    Server->>Analyzer: Parse & Analyze CSV
-    Analyzer->>Generator: Generate Charts
-    Generator->>Server: Create PDF Report
-    Server->>Browser: Return report path
-    Browser->>User: Display download link
-```
-
-### Quick Start Guide
-
-1. **Upload** – Drag & drop or click to select a CSV file
-2. **Configure** – Set report title and select chart types
-3. **Generate** – Click "Generate Professional Report"
-4. **Download** – Open or download the PDF report
-
-### Command Line Interface
-
-```bash
-# Basic usage
-python generate_report.py data/sales_data.csv
-
-# With options
-python generate_report.py data/sales_data.csv \
-    -o output/my_report.pdf \
-    -t "Sales Analysis Report" \
-    -s "Q4 2024 Performance Review"
-```
-
-**CLI Options:**
-
-| Option | Description |
-|--------|-------------|
-| `-o, --output` | Output PDF file path |
-| `-c, --charts` | Charts directory path |
-| `-t, --title` | Custom report title |
-| `-s, --subtitle` | Custom report subtitle |
-
----
-
-## 📑 Report Contents
-
-Each generated report includes:
-
-```mermaid
-graph LR
-    A[📄 PDF Report] --> B[Title Page]
-    A --> C[Executive Summary]
-    A --> D[Data Overview]
-    A --> E[Statistical Analysis]
-    A --> F[Visualizations]
-    A --> G[Insights & Recommendations]
-    
-    E --> E1[Numeric Statistics]
-    E --> E2[Categorical Analysis]
-    E --> E3[Correlation Matrix]
-    
-    F --> F1[Histograms]
-    F --> F2[Pie Charts]
-    F --> F3[Box Plots]
-    F --> F4[Line Charts]
-    
-    style A fill:#e74c3c,color:#fff
-    style B fill:#3498db,color:#fff
-    style C fill:#3498db,color:#fff
-    style G fill:#27ae60,color:#fff
-```
-
-### Report Sections
-
-| Section | Description |
-|---------|-------------|
-| **Title Page** | Professional branding with logo and metadata |
-| **Executive Summary** | Dataset overview, key findings summary |
-| **Data Overview** | Row/column counts, data types, sample data |
-| **Numeric Analysis** | Mean, median, std, min, max for each column |
-| **Categorical Analysis** | Top values, frequency distributions |
-| **Correlation Analysis** | Relationships between numeric variables |
-| **Visualizations** | Charts embedded with explanations |
-| **Conclusions** | Automated insights and recommendations |
 
 ---
 
 ## 🔌 API Reference
 
-### Generate Report Endpoint
+### Generate Report
 
 ```http
 POST /api/generate-report
 Content-Type: multipart/form-data
 ```
 
-**Request Body:**
-
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `file` | File | Yes | CSV file to analyze |
-| `title` | String | No | Custom report title |
-| `subtitle` | String | No | Custom report subtitle |
-| `includeHistograms` | Boolean | No | Include histogram charts |
-| `includePieCharts` | Boolean | No | Include pie charts |
-| `includeBoxPlots` | Boolean | No | Include box plots |
-| `includeLineCharts` | Boolean | No | Include line charts |
+| `file` | File | ✅ | CSV file to analyze |
+| `title` | String | ❌ | Custom report title |
+| `subtitle` | String | ❌ | Custom report subtitle |
+| `includeHistograms` | Boolean | ❌ | Include histogram charts (default `true`) |
+| `includePieCharts` | Boolean | ❌ | Include pie charts (default `true`) |
+| `includeBoxPlots` | Boolean | ❌ | Include box plots (default `true`) |
+| `includeLineCharts` | Boolean | ❌ | Include line charts (default `true`) |
 
-**Response:**
+**Response**
 
 ```json
 {
-    "success": true,
-    "report": "/output/report_20241223_120000.pdf",
-    "message": "Report generated successfully"
+  "success": true,
+  "report": "/output/report_20260913_120000.pdf",
+  "charts": "/output/charts_20260913_120000",
+  "message": "Report generated successfully"
 }
 ```
 
 ---
 
-## 📱 Mobile Responsiveness
-
-Insightify features a fully responsive design with:
-
-- **Hamburger Menu** – Slide-in navigation for mobile
-- **Touch-Friendly** – Minimum 44px tap targets
-- **Adaptive Layout** – Grid changes based on screen size
-- **Hero Section** – Text above cube on mobile view
-
-### Breakpoints
-
-| Breakpoint | Target | Features |
-|------------|--------|----------|
-| `> 1024px` | Desktop | Full navigation, side-by-side layout |
-| `768-1024px` | Tablet | Stacked layout, full nav |
-| `480-768px` | Mobile Landscape | Hamburger menu, stacked sections |
-| `< 480px` | Mobile Portrait | Compact UI, touch optimized |
-
----
-
-## 📸 Screenshots
-
-<div align="center">
-
-### Desktop View
-<img src="demo.png" alt="Desktop Dashboard" width="80%">
-
-### Mobile View (Responsive)
-*Hamburger menu with slide-in navigation*
-
-</div>
-
----
-
 ## 💼 Use Cases
 
-```mermaid
-graph TD
-    A[Insightify] --> B[Data Analysts]
-    A --> C[Business Professionals]
-    A --> D[Researchers]
-    A --> E[Students]
-    A --> F[Developers]
-    
-    B --> B1[Quick CSV insights]
-    B --> B2[Automated reporting]
-    
-    C --> C1[Executive presentations]
-    C --> C2[Stakeholder reports]
-    
-    D --> D1[Research documentation]
-    D --> D2[Publication charts]
-    
-    E --> E1[Learning data analysis]
-    E --> E2[Project submissions]
-    
-    F --> F1[API integration]
-    F --> F2[Workflow automation]
-    
-    style A fill:#3498db,color:#fff
-```
+- **Data Analysts** — instant EDA reports for stakeholders
+- **Business Teams** — executive-ready summaries of sales/ops data
+- **Researchers & Students** — documented statistical analysis for projects
+- **Developers** — a clean, hackable Python reporting pipeline
 
 ---
 
 ## 🔒 Privacy & Security
 
-| Feature | Description |
-|---------|-------------|
-| ✅ **Local Processing** | All data processed on your machine |
-| ✅ **No Cloud Upload** | Data never sent to external servers |
-| ✅ **Temporary Storage** | Files stored locally only |
-| ✅ **No Tracking** | No analytics or user tracking |
+| ✅ | |
+|---|---|
+| **Local processing** | All analysis runs on your machine |
+| **No cloud upload** | Data is never sent to external servers |
+| **No tracking** | Zero analytics or telemetry |
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+Contributions are welcome!
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`)
-3. **Commit** your changes (`git commit -m 'Add AmazingFeature'`)
-4. **Push** to the branch (`git push origin feature/AmazingFeature`)
-5. **Open** a Pull Request
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
 ## 📄 License
 
-This project is part of the **CODTECH IT SOLUTIONS** internship program.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **CODTECH IT SOLUTIONS** – For the internship opportunity
-- **Neela Santhosh Kumar** – Mentor guidance and support
-- **Open Source Community** – For the amazing libraries used
+- **CODTECH IT SOLUTIONS** — internship opportunity & mentorship
+- **Neela Santhosh Kumar** — mentor guidance
+- The open-source Python data community
 
 ---
 
 <div align="center">
 
-### 👨‍💻 Developer
+**Insightify** — Transform your data into insights.
 
-**Aman Shaikh**  
-*Python Developer | Data Analyst*
-
-[![GitHub](https://img.shields.io/badge/GitHub-amaanshaikh711-181717?style=for-the-badge&logo=github)](https://github.com/amaanshaikh711)
-
----
-
-**Made with ❤️ for professional data analysis**
-
-*Transform your data into insights with Insightify*
+*Built with ❤️ by [Aman Shaikh](https://github.com/amaanshaikh711)*
 
 </div>
