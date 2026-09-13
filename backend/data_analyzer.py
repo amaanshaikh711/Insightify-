@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime
+from scipy import stats as scipy_stats
 import warnings
 import os
 
@@ -16,6 +17,12 @@ class DataAnalyzer:
         self.df = pd.read_csv(csv_file)
         # Clean column names
         self.df.columns = [str(col).strip() for col in self.df.columns]
+        
+        # Drop empty "Unnamed:" columns created by stray trailing commas in CSVs
+        unnamed_cols = [c for c in self.df.columns if c.startswith('Unnamed:')]
+        if unnamed_cols:
+            self.df = self.df.drop(columns=unnamed_cols)
+            print(f"[*] Dropped {len(unnamed_cols)} empty column(s)")
         
         self.analysis_results = {}
         self.charts = {}
@@ -30,10 +37,14 @@ class DataAnalyzer:
         for col in self.categorical_cols[:]:
             if 'date' in col.lower() or 'time' in col.lower():
                 try:
-                    self.df[col] = pd.to_datetime(self.df[col])
-                    self.date_cols.append(col)
-                    self.categorical_cols.remove(col)
-                except:
+                    parsed = pd.to_datetime(self.df[col], errors='coerce', format='mixed', dayfirst=True)
+                    valid = parsed.dropna()
+                    # Accept only if most values parsed to plausible real dates
+                    if len(valid) >= 0.8 * len(self.df) and ((valid.dt.year >= 1900) & (valid.dt.year <= 2100)).all():
+                        self.df[col] = parsed
+                        self.date_cols.append(col)
+                        self.categorical_cols.remove(col)
+                except (ValueError, TypeError, OverflowError):
                     pass
         
         # Professional color palettes
@@ -108,6 +119,8 @@ class DataAnalyzer:
         stats = {}
         for col in self.numeric_cols:
             col_data = self.df[col].dropna()
+            if col_data.empty:
+                continue  # Skip columns with no numeric data
             stats[col] = {
                 'mean': col_data.mean(),
                 'median': col_data.median(),
@@ -144,9 +157,12 @@ class DataAnalyzer:
         temp_df = self.df.copy()
         temp_df[date_col] = pd.to_datetime(temp_df[date_col])
         
-        # Monthly aggregation
+        # Monthly aggregation ('ME' for pandas >= 2.2, fallback to 'M')
         monthly_data = temp_df.set_index(date_col)
-        monthly_stats = monthly_data[self.numeric_cols].resample('M').agg(['sum', 'mean', 'count'])
+        try:
+            monthly_stats = monthly_data[self.numeric_cols].resample('ME').agg(['sum', 'mean', 'count'])
+        except ValueError:
+            monthly_stats = monthly_data[self.numeric_cols].resample('M').agg(['sum', 'mean', 'count'])
         
         return {
             'date_column': date_col,
@@ -157,7 +173,10 @@ class DataAnalyzer:
 
     def _analyze_correlations(self):
         """Calculate correlation matrix"""
-        corr_matrix = self.df[self.numeric_cols].corr()
+        df_num = self.df[self.numeric_cols].dropna(axis=1, how='all')
+        if df_num.shape[1] < 2:
+            return []
+        corr_matrix = df_num.corr()
         correlations = []
         for i in range(len(corr_matrix.columns)):
             for j in range(i+1, len(corr_matrix.columns)):
@@ -266,33 +285,41 @@ class DataAnalyzer:
                 fig, ax = plt.subplots(figsize=(12, 6))
                 
                 data = self.df[col].dropna()
+                if data.empty:
+                    plt.close(fig)
+                    continue  # Skip columns with no numeric data
                 
                 # Create histogram with vibrant colors
                 n, bins, patches = ax.hist(data, bins=30, edgecolor='white', linewidth=1.5, alpha=0.85)
                 
                 # Color gradient for bars
-                cm = plt.cm.get_cmap('viridis')
+                cm = plt.get_cmap('viridis')
                 bin_centers = 0.5 * (bins[:-1] + bins[1:])
                 col_normalized = (bin_centers - bin_centers.min()) / (bin_centers.max() - bin_centers.min())
                 
                 for c, p in zip(col_normalized, patches):
                     plt.setp(p, 'facecolor', cm(c))
                 
-                # Add KDE line
-                from scipy import stats
-                density = stats.gaussian_kde(data)
-                xs = np.linspace(data.min(), data.max(), 200)
-                density_values = density(xs)
-                # Scale density to match histogram
-                density_scaled = density_values * len(data) * (bins[1] - bins[0])
-                ax.plot(xs, density_scaled, color=self.colors['accent'], linewidth=3, 
-                       label='Density Curve', alpha=0.9)
+                # Add KDE line (guarded: gaussian_kde fails on constant data or very
+                # small samples - "data lies in a lower-dimensional subspace" error)
+                try:
+                    if data.nunique() > 1 and len(data) >= 5:
+                        density = scipy_stats.gaussian_kde(data)
+                        xs = np.linspace(data.min(), data.max(), 200)
+                        density_values = density(xs)
+                        # Scale density to match histogram
+                        density_scaled = density_values * len(data) * (bins[1] - bins[0])
+                        ax.plot(xs, density_scaled, color=self.colors['accent'], linewidth=3,
+                               label='Density Curve', alpha=0.9)
+                except Exception:
+                    pass  # KDE not computable for this column - skip the curve
                 
                 ax.set_xlabel(col, fontweight='bold', fontsize=12)
                 ax.set_ylabel('Frequency', fontweight='bold', fontsize=12)
                 ax.set_title(f'Distribution: {col}', fontweight='bold', fontsize=14, pad=15)
                 ax.grid(True, alpha=0.3, linestyle='--', axis='y')
-                ax.legend(loc='best', fontsize=10)
+                if ax.get_legend_handles_labels()[0]:
+                    ax.legend(loc='best', fontsize=10)
                 
                 # Add statistics box
                 stats_text = f"Mean: {data.mean():.2f}\nMedian: {data.median():.2f}\nStd: {data.std():.2f}\nMin: {data.min():.2f}\nMax: {data.max():.2f}"
@@ -310,6 +337,9 @@ class DataAnalyzer:
                 fig, ax = plt.subplots(figsize=(14, 7))
                 
                 data = self.df[col].dropna()
+                if data.empty:
+                    plt.close(fig)
+                    continue  # Skip columns with no numeric data
                 x_values = range(len(data))
                 
                 # Main line chart
@@ -378,10 +408,11 @@ class DataAnalyzer:
                     
                     top_cats = self.df[col].value_counts().head(8)
                     colors_list = sns.color_palette(self.palettes['sunset'], len(top_cats))
+                    explode = [0.05] * len(top_cats) if len(top_cats) > 1 else None
                     
                     wedges, texts, autotexts = ax.pie(top_cats.values, labels=top_cats.index,
                                                        autopct='%1.1f%%', startangle=90,
-                                                       colors=colors_list, explode=[0.05] * len(top_cats),
+                                                       colors=colors_list, explode=explode,
                                                        shadow=True, textprops={'fontweight': 'bold', 'fontsize': 10})
                     
                     for autotext in autotexts:
@@ -425,7 +456,10 @@ class DataAnalyzer:
                 temp_df[date_col] = pd.to_datetime(temp_df[date_col])
                 
                 # Aggregate by month for cleaner visualization
-                monthly = temp_df.set_index(date_col)[target_col].resample('M').mean()
+                try:
+                    monthly = temp_df.set_index(date_col)[target_col].resample('ME').mean()
+                except ValueError:
+                    monthly = temp_df.set_index(date_col)[target_col].resample('M').mean()
                 
                 ax.plot(monthly.index, monthly.values, color=self.colors['primary'],
                        linewidth=3, marker='o', markersize=6, markerfacecolor=self.colors['accent'],
@@ -450,6 +484,9 @@ class DataAnalyzer:
                 fig, ax = plt.subplots(figsize=(10, 6))
                 
                 box_data = self.df[col].dropna()
+                if box_data.empty:
+                    plt.close(fig)
+                    continue  # Skip columns with no numeric data
                 bp = ax.boxplot([box_data], vert=True, patch_artist=True, widths=0.5,
                                boxprops=dict(facecolor=self.colors['primary'], alpha=0.7, linewidth=2),
                                medianprops=dict(color='#c0392b', linewidth=3),
@@ -478,15 +515,19 @@ class DataAnalyzer:
                 fig, ax = plt.subplots(figsize=(10, 7))
                 
                 col1, col2 = corr['col1'], corr['col2']
+                pair = self.df[[col1, col2]].replace([np.inf, -np.inf], np.nan).dropna()
+                if pair.empty or pair[col1].nunique() < 2 or pair[col2].nunique() < 2:
+                    plt.close(fig)
+                    continue  # Not enough valid data for a meaningful scatter
                 
                 # Scatter plot
-                ax.scatter(self.df[col1], self.df[col2], alpha=0.6, s=60,
-                          c=self.df[col2], cmap='viridis', edgecolors='white', linewidth=0.5)
+                ax.scatter(pair[col1], pair[col2], alpha=0.6, s=60,
+                          c=pair[col2], cmap='viridis', edgecolors='white', linewidth=0.5)
                 
                 # Add trend line
-                z = np.polyfit(self.df[col1].dropna(), self.df[col2].dropna(), 1)
+                z = np.polyfit(pair[col1], pair[col2], 1)
                 p = np.poly1d(z)
-                ax.plot(self.df[col1], p(self.df[col1]), "r--", linewidth=2.5, alpha=0.8, label=f'Trend Line')
+                ax.plot(pair[col1], p(pair[col1]), "r--", linewidth=2.5, alpha=0.8, label='Trend Line')
                 
                 ax.set_xlabel(col1, fontweight='bold', fontsize=12)
                 ax.set_ylabel(col2, fontweight='bold', fontsize=12)
@@ -501,15 +542,17 @@ class DataAnalyzer:
                 chart_count += 1
         
         # 8. Multi-line chart for comparing numeric columns
-        if len(self.numeric_cols) >= 2 and len(self.numeric_cols) <= 5:
+        plot_cols = [c for c in self.numeric_cols
+                     if self.df[c].notna().any() and self.df[c].max() != self.df[c].min()]
+        if 2 <= len(plot_cols) <= 5:
             fig, ax = plt.subplots(figsize=(14, 7))
             
             # Normalize data for comparison
-            df_normalized = self.df[self.numeric_cols].apply(lambda x: (x - x.min()) / (x.max() - x.min()))
+            df_normalized = self.df[plot_cols].apply(lambda x: (x - x.min()) / (x.max() - x.min()))
             
-            colors_multi = sns.color_palette(self.palettes['ocean'], len(self.numeric_cols))
+            colors_multi = sns.color_palette(self.palettes['ocean'], len(plot_cols))
             
-            for i, col in enumerate(self.numeric_cols):
+            for i, col in enumerate(plot_cols):
                 ax.plot(df_normalized.index[:100], df_normalized[col][:100],
                        label=col, linewidth=2.5, color=colors_multi[i], alpha=0.8)
             

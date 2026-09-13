@@ -21,7 +21,7 @@ def test_enhanced_reports():
     print("🧪 TESTING ENHANCED INSIGHTIFY REPORT GENERATION")
     print("=" * 80)
     
-    # Find sample data
+    # Find sample data: preferred files first, then any CSV in data/
     sample_files = [
         "data/train.csv",
         "data/upload_20251206_180925_BMW sales data (2010-2024) (1).csv"
@@ -32,6 +32,11 @@ def test_enhanced_reports():
         if os.path.exists(file):
             test_file = file
             break
+    
+    if not test_file and os.path.isdir("data"):
+        csvs = sorted(f for f in os.listdir("data") if f.lower().endswith(".csv"))
+        if csvs:
+            test_file = os.path.join("data", csvs[0])
     
     if not test_file:
         print("❌ No sample data found!")

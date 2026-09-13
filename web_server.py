@@ -7,13 +7,7 @@ Serves the professional web interface and handles report generation
 import os
 import sys
 import json
-import threading
-import functools
-import io
-import tempfile
-from email import message_from_binary_file
-from email.parser import BytesParser
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from datetime import datetime
 from backend.data_analyzer import DataAnalyzer
@@ -24,10 +18,13 @@ class InsightifyRequestHandler(SimpleHTTPRequestHandler):
     
     def do_GET(self):
         """Handle GET requests"""
-        if self.path == '/':
+        # Strip query string / fragment so "/?x=1" still serves the homepage
+        # (otherwise it falls through to a directory listing)
+        path_only = self.path.split('?', 1)[0].split('#', 1)[0]
+        if path_only == '/':
             self.path = '/frontend/index.html'
-        elif self.path in ['/styles.css', '/app.js', '/index.html']:
-            self.path = '/frontend' + self.path.replace('/frontend', '')
+        elif path_only in ['/styles.css', '/app.js', '/index.html', '/logo.png', '/favicon.png', '/favicon.svg', '/logo-full.png']:
+            self.path = '/frontend' + path_only
         return super().do_GET()
     
     def do_POST(self):
@@ -178,8 +175,8 @@ class InsightifyRequestHandler(SimpleHTTPRequestHandler):
             
             self.send_json_response({
                 'success': True,
-                'report': f"/{output_pdf}",
-                'charts': f"/{chart_dir}",
+                'report': '/' + output_pdf.replace(os.sep, '/'),
+                'charts': '/' + chart_dir.replace(os.sep, '/'),
                 'message': 'Report generated successfully'
             })
         
@@ -201,6 +198,8 @@ class InsightifyRequestHandler(SimpleHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        # Always revalidate in local dev so edits show up on reload
+        self.send_header('Cache-Control', 'no-cache')
         super().end_headers()
 
 def run_server(port=8000):
@@ -208,7 +207,8 @@ def run_server(port=8000):
     server_address = ('', port)
     # Serve from current directory (root) so we can access data, output, and frontend
     # We will handle the redirection to frontend/index.html in do_GET
-    httpd = HTTPServer(server_address, InsightifyRequestHandler)
+    # ThreadingHTTPServer keeps the UI responsive while reports are generated
+    httpd = ThreadingHTTPServer(server_address, InsightifyRequestHandler)
     
     print(f"""
     ╔════════════════════════════════════════════════════════════╗

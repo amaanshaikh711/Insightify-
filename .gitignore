@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+
+# Generated outputs
+output/
+
+# Uploaded CSVs (keep seed data like data/train.csv)
+data/upload_*
+
+# Local tooling
+.freebuff/
